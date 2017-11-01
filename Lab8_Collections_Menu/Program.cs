@@ -14,6 +14,8 @@ namespace Lab8_Collections_Menu
             Dictionary<string, double> menu = new Dictionary<string, double>();
             ArrayList itemCart = new ArrayList();
             ArrayList itemPrice = new ArrayList();
+            ArrayList quanities = new ArrayList();
+
 
             string[] itemNumbers = { "fish", "cat", "dog", "parrot", "mouse", "rabbit", "snake", "frog" };
 
@@ -30,9 +32,12 @@ namespace Lab8_Collections_Menu
 
             Console.WriteLine("Welcome to the Pet Store!\nCheck out our Animal Menu");
 
+            int itemsInCart = 0;
 
             do
             {
+                
+
                 int count = 1;
                 Console.WriteLine("#   Item          Price\n========================");
                 foreach (KeyValuePair<string, double> animal in menu)
@@ -47,16 +52,29 @@ namespace Lab8_Collections_Menu
 
                 if (menu.ContainsKey(selection))
                 {
+                    Console.Write("How many would you like? ");
+                    int.TryParse(Console.ReadLine(), out int itemQuantity);
                     itemCart.Add(selection);
                     itemPrice.Add(menu[selection]);
+                    quanities.Add(itemQuantity);
+                    itemsInCart += itemQuantity;
+
                     Console.WriteLine($"You added {selection} to your cart, it costs ${menu[selection]}");
+                    Console.WriteLine($"You wanted {itemQuantity} of them!");
                 }
                 else if (selection == "1" || selection == "2" || selection == "3" || selection == "4" || selection == "5" || selection == "6" || selection == "7" || selection == "8")
                 {
-                    selection = itemNumbers[Convert.ToInt16(selection) - 1];
+                    selection = itemNumbers[Convert.ToInt16(selection) - 1]; //converts item number into key
+
+                    Console.Write("How many would you like? ");
+                    int.TryParse(Console.ReadLine(), out int itemQuantity);
                     itemCart.Add(selection);
                     itemPrice.Add(menu[selection]);
+                    quanities.Add(itemQuantity);
+                    itemsInCart += itemQuantity;
+
                     Console.WriteLine($"You added {selection} to your cart, it costs ${menu[selection]}");
+                    Console.WriteLine($"You wanted {itemQuantity} of them!");
 
                 }
                 else
@@ -69,23 +87,38 @@ namespace Lab8_Collections_Menu
 
             } while (anotherItem);
             Console.WriteLine("Thanks for your order!");
-            Console.WriteLine("Your Cart contains: ");
+            Console.WriteLine($"Your Cart contains: {itemsInCart} animals ");
             for (int i = 0; i < itemCart.Count; i++)
             {
-                Console.WriteLine($"{itemCart[i],-10} {itemPrice[i],-10}");
+                Console.WriteLine($"{itemCart[i],-10} {itemPrice[i],-10} * {quanities[i]}");
 
             }
 
             //getting the total of the cart
-            double totalPrice = TotalOfDoubles(itemPrice);
-            double averagePrice = AverageOfDoubles(itemPrice);
+            double totalPrice = TotalOfDoublesQuantity(itemPrice, quanities);
+            double averagePrice = totalPrice/itemsInCart;
 
             string averagePriceString = string.Format("{0:0.00}", averagePrice);
 
             Console.WriteLine($"Your total is: ${totalPrice}");
             Console.WriteLine($"The average item price in your cart is ${averagePriceString}\n");
             Console.WriteLine("Thank you for shopping at our Pet Store!");
+            double max =double.MinValue;
+            double min = double.MaxValue;
 
+           foreach (double x in itemPrice)
+            {
+                if (max < x)
+                {
+                    max = x;
+                }
+                if (min > x)
+                {
+                    min = x;
+                }
+            }
+            Console.WriteLine($"The most expensive item was ${max}");
+            Console.WriteLine($"The least expensive item was ${min}");
         }
 
         private static double TotalOfDoubles(ArrayList itemPrice)
@@ -101,9 +134,22 @@ namespace Lab8_Collections_Menu
             return totalPrice;
         }
 
-        private static double AverageOfDoubles(ArrayList itemPrice)
+        private static double TotalOfDoublesQuantity(ArrayList itemPrice, ArrayList StoredQuantity)
         {
-            return TotalOfDoubles(itemPrice) / itemPrice.Count;
+            double totalPrice = 0;
+            for (int i = 0; i < itemPrice.Count; i++)
+            {
+
+                double itemCost = (double)itemPrice[i] * (int)StoredQuantity[i];
+                totalPrice += itemCost;
+            }
+
+            return totalPrice;
+        }
+
+        private static double AverageOfDoubles(ArrayList itemPrice, int ItemsInCart)
+        {
+            return TotalOfDoubles(itemPrice) / ItemsInCart;
         }
 
         private static bool GetYesorNo()
