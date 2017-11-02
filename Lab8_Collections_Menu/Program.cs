@@ -117,8 +117,9 @@ namespace Lab8_Collections_Menu
                     min = x;
                 }
             }
-            Console.WriteLine($"The most expensive item was ${max}");
-            Console.WriteLine($"The least expensive item was ${min}");
+
+            Console.WriteLine($"The most expensive item was ${max} {itemCart[itemPrice.IndexOf(max)]}");
+            Console.WriteLine($"The least expensive item was ${min} {itemCart[itemPrice.IndexOf(min)]}");
         }
 
         private static double TotalOfDoubles(ArrayList itemPrice)
